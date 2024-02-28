@@ -17,7 +17,7 @@
 
 - 1024K  测试下载地址: `https://speedtest.cmliussss.workers.dev/1024k`
 - 200M   测试下载地址: `https://speedtest.cmliussss.workers.dev/200m`
-- 1G     测试下载地址: `https://speedtest.cmliussss.workers.dev/1G`
+- 1G     测试下载地址: `https://speedtest.cmliussss.workers.dev/1g`
 
 3. **推荐使用workers部署方案并绑定自定义域，即可同时具备 http/https 两种测速途径。**
 
