@@ -11,6 +11,12 @@ export default {
       bytes = 100000000;
     } else if (path === "locations") {
       return locations_cn(request);
+    } else if (path === "cdn-cgi/trace") {
+      // 反代 cdn-cgi/trace 请求
+      let targetUrl = `https://speed.cloudflare.com/cdn-cgi/trace`;
+      let cfRequest = new Request(targetUrl, request);
+      let response = await fetch(cfRequest);
+      return response;
     } else {
       // 其他路径，进行正常的处理
       const regex = /^(\d+)([a-z]{0,2})$/i;
