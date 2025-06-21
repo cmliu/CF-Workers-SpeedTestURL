@@ -1,0 +1,3 @@
+name = "speedtest-url"
+main = "_worker.js"
+compatibility_date = "2025-06-21"
