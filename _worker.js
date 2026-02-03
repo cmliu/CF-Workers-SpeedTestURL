@@ -3,7 +3,6 @@ export default {
     // 创建一个新的 URL 对象
     let url = new URL(request.url);
     let path = url.pathname.substring(1);
-    let isSecure = url.protocol.startsWith("https");
     let bytes;
     // 判断路径是否为空
     if (!path) {
@@ -11,12 +10,6 @@ export default {
       bytes = 100000000;
     } else if (path === "locations") {
       return locations_cn(request);
-    } else if (path === "cdn-cgi/trace") {
-      // 反代 cdn-cgi/trace 请求
-      let targetUrl = `https://speed.cloudflare.com/cdn-cgi/trace`;
-      let cfRequest = new Request(targetUrl, request);
-      let response = await fetch(cfRequest);
-      return response;
     } else {
       // 其他路径，进行正常的处理
       const regex = /^(\d+)([a-z]{0,2})$/i;
@@ -42,8 +35,14 @@ export default {
       }
     }
 
-    let targetUrl = `http${isSecure ? 's' : ''}://speed.cloudflare.com/__down?bytes=${bytes}`;
-    let cfRequest = new Request(targetUrl, request);
+    let targetUrl = `https://speed.cloudflare.com/__down?bytes=${bytes}`;
+    const headers = new Headers(request.headers);
+    headers.set('referer', 'https://speed.cloudflare.com/');
+    let cfRequest = new Request(targetUrl, {
+      method: request.method,
+      headers: headers,
+      body: request.body
+    });
     let response = await fetch(cfRequest);
 
     // 将测试结果反馈给用户
@@ -55,7 +54,11 @@ async function locations_cn(request) {
   const url = 'https://speed.cloudflare.com/locations';
 
   // 从指定 URL 获取内容
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: {
+      'referer': 'https://speed.cloudflare.com/'
+    }
+  });
   const jsonResponse = await response.json();
 
   // 定义 region 的中英文对照表
